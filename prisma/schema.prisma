@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model fan {
+  name      String   @id @db.VarChar(20)
+  mode      Decimal  @db.Decimal(1, 0)
+  protocols String   @db.VarChar(20)
+  bits      Decimal  @db.Decimal(3, 0)
+  on        String   @db.VarChar(20)
+  off       String   @db.VarChar(20)
+  L_fan     String?  @map("L-fan") @db.VarChar(20)
+  H_fan     String?  @map("H-fan") @db.VarChar(20)
+  H_swing   String?  @map("H-swing") @db.VarChar(20)
+  V_swing   String?  @map("V-swing") @db.VarChar(20)
+  time      DateTime @default(now()) @db.Timestamp(0)
+}
+
+model tv {
+  name      String   @id @db.VarChar(20)
+  mode      Decimal  @db.Decimal(1, 0)
+  protocols String   @db.VarChar(20)
+  bits      Decimal  @db.Decimal(3, 0)
+  on        String   @db.VarChar(20)
+  off       String   @db.VarChar(20)
+  zero      String?  @db.VarChar(20)
+  one       String?  @db.VarChar(20)
+  two       String?  @db.VarChar(20)
+  three     String?  @db.VarChar(20)
+  four      String?  @db.VarChar(20)
+  five      String?  @db.VarChar(20)
+  six       String?  @db.VarChar(20)
+  seven     String?  @db.VarChar(20)
+  eight     String?  @db.VarChar(20)
+  nine      String?  @db.VarChar(20)
+  ok        String?  @db.VarChar(20)
+  time      DateTime @default(now()) @db.Timestamp(0)
+}
+
+model log {
+  name      String   @db.VarChar(20)
+  devices   String   @db.VarChar(20)
+  IR_signal String   @db.VarChar(20)
+  time      DateTime @id @default(now()) @db.Timestamp(0)
+}
+
+model aircon {
+  name      String   @id @db.VarChar(20)
+  mode      Decimal  @db.Decimal(1, 0)
+  protocols String   @db.VarChar(20)
+  bits      Decimal  @db.Decimal(3, 0)
+  on        String   @db.Text
+  off       String   @db.Text
+  H_swing   String?  @map("H-swing") @db.Text
+  V_swing   String?  @map("V-swing") @db.Text
+  time      DateTime @default(now()) @db.Timestamp(0)
+}

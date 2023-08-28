@@ -1,0 +1,33 @@
+#include <IRremote.hpp>
+
+void setup() {
+  Serial.begin(115200);
+#if defined(IR_SEND_PIN)
+  IrSender.begin();
+#  if defined(IR_SEND_PIN_STRING)
+  Serial.println(F("Send IR signals at pin " IR_SEND_PIN_STRING));
+#  else
+  Serial.println(F("Send IR signals at pin " STR(IR_SEND_PIN)));
+#  endif
+#else
+  IrSender.begin(3, ENABLE_LED_FEEDBACK, USE_DEFAULT_FEEDBACK_LED_PIN);
+  Serial.println(F("Send IR signals at pin 3"));
+#endif
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.println("發射");
+  IrSender.sendPulseDistanceWidth(38, 1300, 350, 1300, 400, 450, 1250, 0x61D, 11, PROTOCOL_IS_LSB_FIRST, 500, 3);
+
+//IrSender.sendPulseDistanceWidth(38, 1250, 400, 1250, 400, 450, 1250, 0x31D, 11, 定時
+//IrSender.sendPulseDistanceWidth(38, 1300, 350, 1300, 400, 450, 1200, 0x8D, 11, 弱風量
+//IrSender.sendPulseDistanceWidth(38, 1250, 400, 1250, 400, 450, 1250, 0x4D, 11, 強風量
+//IrSender.sendPulseDistanceWidth(38, 1300, 400, 1250, 400, 450, 1250, 0x40D, 11 左右擺頭
+//IrSender.sendPulseDistanceWidth(38, 1300, 350, 1250, 400, 450, 1250, 0x20D, 11, 上下擺頭
+
+  
+
+delay(1000);
+
+}
