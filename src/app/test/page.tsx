@@ -19,13 +19,12 @@ const getGoogleFitData = async () => {
         body: JSON.stringify({
             aggregateBy: [
                 {
-                    dataSourceId:
-                        "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
+                    dataTypeName: "com.google.sleep.segment",
                 },
             ],
-            bucketByTime: { durationMillis: 86400000 },
-            startTimeMillis: 1692547200000,
-            endTimeMillis: 1692627455410,
+
+            startTimeMillis: 1692000000000,
+            endTimeMillis: 1692812610658,
         }),
     })
     return await res.json()
