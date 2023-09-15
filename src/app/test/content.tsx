@@ -42,7 +42,7 @@ const Content = ({ user }: { user: User }) => {
 
     useEffect(() => {
         const date = new Date(endDate)
-        console.log("date", date.getTime())
+        console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
     }, [endDate])
 
     const formatTime = (type: string, time: string) => {
@@ -50,14 +50,14 @@ const Content = ({ user }: { user: User }) => {
         // 1694534400000 -> xxxx-xx-xx xx:xx:xx zh-TW
         // in out
         if (type === "in") {
-            // xxxx-xx-xx -> TimeMillis utc
+            // xxxx-xx-xx -> TimeMillis zh-TW
             const date = new Date(time)
-            console.log("date", date.getTime())
-            return date.getTime()
+            console.log("date", date.getTime() - 8 * 60 * 60 * 1000)
+            return date.getTime() - 8 * 60 * 60 * 1000
         }
         if (type === "out") {
             const date = new Date(parseInt(time))
-            return date.toLocaleString("zh-TW")
+            return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })
         }
     }
 
@@ -85,19 +85,20 @@ const Content = ({ user }: { user: User }) => {
                 />
             </div>
             <div className=''>
-                {startDate}
-                {endDate}
+                {startDate} {"~"} {endDate}
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
-                {data?.bucket.map((item) => {
-                    return (
-                        <div key={item.startTimeMillis}>
-                            <p>開始時間: {formatTime("out", item.startTimeMillis)}</p>
-                            <p>結束時間: {formatTime("out", item.endTimeMillis)}</p>
-                            <p>步數: {item.dataset[0].point[0].value[0].intVal}</p>
-                        </div>
-                    )
-                })}
+                {data?.bucket &&
+                    data?.bucket.map((item) => {
+                        return (
+                            <div key={item.startTimeMillis}>
+                                <p>開始時間: {formatTime("out", item.startTimeMillis)}</p>
+                                <p>結束時間: {formatTime("out", item.endTimeMillis)}</p>
+                                <p>步數: {item.dataset[0].point[0].value[0].intVal}</p>
+                            </div>
+                        )
+                    })}
+                <pre>資料{JSON.stringify(data, null, 1)}</pre>
             </div>
         </div>
     )
