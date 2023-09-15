@@ -93,7 +93,7 @@ export const POST = async (req: NextRequest) => {
         }
     }
 
-    const res2 = await fetch("http://192.168.1.97", {
+    const res2 = await fetch("http://192.168.123.97", {
         method: "POST",
         body: JSON.stringify(signal),
     })

@@ -3,34 +3,39 @@
 // import { useState, useEffect } from "react"
 import { getServerSession } from "next-auth"
 import authOptions from "@/lib/auth"
+import Content from "./content"
+import { Step } from "@/types"
 
-const getGoogleFitData = async () => {
-    const session = await getServerSession(authOptions)
-    console.log({ session })
-    if (!session) {
-        return
-    }
-    const res = await fetch("https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify({
-            aggregateBy: [
-                {
-                    dataTypeName: "com.google.sleep.segment",
-                },
-            ],
-
-            startTimeMillis: 1692000000000,
-            endTimeMillis: 1692812610658,
-        }),
-    })
-    return await res.json()
-}
+// const getGoogleFitData = async () => {
+//     const session = await getServerSession(authOptions)
+//     console.log({ session })
+//     if (!session) {
+//         return
+//     }
+//     const res = await fetch("https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${session.accessToken}`,
+//         },
+//         body: JSON.stringify({
+//             aggregateBy: [
+//                 {
+//                     dataSourceId:
+//                         "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
+//                     // dataTypeName: "com.google.sleep.segment",
+//                 },
+//             ],
+//             bucketByTime: { durationMillis: 86400000 },
+//             startTimeMillis: 1694534400000,
+//             endTimeMillis: 1694674661167,
+//         }),
+//     })
+//     return await res.json()
+// }
 
 const TestPage = async () => {
+    const session = await getServerSession(authOptions)
     // const [data, setData] = useState([])
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -61,12 +66,29 @@ const TestPage = async () => {
     //     }
     //     fetchData()
     // }, [])
-    const data = await getGoogleFitData()
+    // const data: Step = await getGoogleFitData()
+
+    const formatTime = (time: string) => {
+        // TimeMillis -> Time
+        // 1694534400000 -> xxxx-xx-xx xx:xx:xx zh-TW
+        const date = new Date(parseInt(time))
+        return date.toLocaleString("zh-TW")
+    }
 
     return (
         <div>
             <h1>Test Page</h1>
-            <pre>資料{JSON.stringify(data, null, 1)}</pre>
+            {session && <Content user={session.user} />}
+            {/* <pre>資料{JSON.stringify(data, null, 1)}</pre> */}
+            {/* {data.bucket.map((item) => {
+                return (
+                    <div key={item.startTimeMillis}>
+                        <p>開始時間: {formatTime(item.startTimeMillis)}</p>
+                        <p>結束時間: {formatTime(item.endTimeMillis)}</p>
+                        <p>步數: {item.dataset[0].point[0].value[0].intVal}</p>
+                    </div>
+                )
+            })} */}
         </div>
     )
 }

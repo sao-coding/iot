@@ -8,7 +8,10 @@ const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             authorization: {
                 params: {
-                    scope: "openid https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.sleep.read",
+                    scope: "openid email profile https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.sleep.read",
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code",
                 },
             },
         }),
@@ -26,7 +29,9 @@ const authOptions: NextAuthOptions = {
         },
         async session({ session, token }) {
             // console.log("session", session, "token", token)
-            return { ...session, accessToken: token.accessToken }
+            // return { ...session, accessToken: token.accessToken }
+            session.user.accessToken = token.accessToken as string
+            return session
         },
     },
     // pages: {

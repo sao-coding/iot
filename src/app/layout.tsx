@@ -1,5 +1,6 @@
 import "./globals.css"
 import type { Metadata } from "next"
+import Providers from "@/app/providers"
 import Toaster from "@/components/Toaster"
 import Container from "@/components/Container"
 
@@ -13,7 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang='zh-Hant-TW'>
             <body>
                 <Toaster />
-                <Container>{children}</Container>
+                <Container>                    
+                    <Providers>
+                        {children}
+                    </Providers>
+                    </Container>
             </body>
         </html>
     )
