@@ -10,6 +10,9 @@ const HomePage = () => {
                 <Link href='/log' className='border p-2 rounded-xl hover:bg-gray-200'>
                     紅外線遙控記錄
                 </Link>
+                <Link href='/fit' className='border p-2 rounded-xl hover:bg-gray-200'>
+                    Google Fit
+                </Link>
             </div>
         </div>
     )
