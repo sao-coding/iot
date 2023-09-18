@@ -3,7 +3,7 @@
 import { User } from "next-auth"
 import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Step } from "@/types"
+import { Sleep } from "@/types"
 
 const Content = ({ user }: { user: User }) => {
     console.log({ user })
@@ -11,8 +11,8 @@ const Content = ({ user }: { user: User }) => {
     const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10))
     const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
 
-    const { data, isLoading, isError, error } = useQuery<Step, Error>({
-        queryKey: ["step", { startDate, endDate }],
+    const { data, isLoading, isError, error } = useQuery<Sleep, Error>({
+        queryKey: ["sleep", { startDate, endDate }],
         queryFn: async () => {
             const res = await fetch(
                 "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
@@ -25,12 +25,9 @@ const Content = ({ user }: { user: User }) => {
                     body: JSON.stringify({
                         aggregateBy: [
                             {
-                                dataSourceId:
-                                    "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
-                                // dataTypeName: "com.google.sleep.segment",
+                                dataTypeName: "com.google.sleep.segment",
                             },
                         ],
-                        bucketByTime: { durationMillis: 86400000 },
                         startTimeMillis: formatTime("in", startDate),
                         endTimeMillis: formatTime("in", endDate),
                     }),
@@ -89,12 +86,27 @@ const Content = ({ user }: { user: User }) => {
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
                 {data?.bucket &&
-                    data?.bucket.map((item) => {
+                    data?.bucket[0]?.dataset[0].point.map((item) => {
                         return (
-                            <div key={item.startTimeMillis}>
-                                <p>開始時間: {formatTime("out", item.startTimeMillis)}</p>
-                                <p>結束時間: {formatTime("out", item.endTimeMillis)}</p>
-                                <p>步數: {item.dataset[0].point[0].value[0].intVal}</p>
+                            <div key={item.startTimeNanos}>
+                                <p>開始時間: {item.startTimeNanos}</p>
+                                <p>結束時間: {item.endTimeNanos}</p>
+                                {/* 三個 value 平均值:{" "} */}
+                                {/* 清醒 (在睡眠週期期間)	1
+舒眠	2
+床/床外	3
+淺層睡眠	4
+深層睡眠	5
+快速動眼期	6 */}
+                                <p>
+                                    睡眠階段類型:
+                                    {item.value[0].intVal === 1 && "清醒"}
+                                    {item.value[0].intVal === 2 && "舒眠"}
+                                    {item.value[0].intVal === 3 && "床/床外"}
+                                    {item.value[0].intVal === 4 && "淺層睡眠"}
+                                    {item.value[0].intVal === 5 && "深層睡眠"}
+                                    {item.value[0].intVal === 6 && "快速動眼期"}
+                                </p>
                             </div>
                         )
                     })}

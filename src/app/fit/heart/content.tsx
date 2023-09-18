@@ -12,7 +12,7 @@ const Content = ({ user }: { user: User }) => {
     const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
 
     const { data, isLoading, isError, error } = useQuery<Heart, Error>({
-        queryKey: ["googleFit", { startDate, endDate }],
+        queryKey: ["heart", { startDate, endDate }],
         queryFn: async () => {
             const res = await fetch(
                 "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",

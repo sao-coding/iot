@@ -29,6 +29,9 @@ const FitPage = async () => {
                 <Link href='/fit/heart' className='border p-2 rounded-xl hover:bg-gray-200 flex'>
                     Heart
                 </Link>
+                <Link href='/fit/sleep' className='border p-2 rounded-xl hover:bg-gray-200 flex'>
+                    Sleep
+                </Link>
             </div>
         </div>
     )
