@@ -26,7 +26,7 @@ const Content = ({ user }: { user: User }) => {
                         aggregateBy: [
                             {
                                 dataSourceId:
-                                    "derived:com.google.step_count.delta:com.google.android.gms:merge_step_deltas",
+                                    "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
                                 // dataTypeName: "com.google.sleep.segment",
                             },
                         ],
