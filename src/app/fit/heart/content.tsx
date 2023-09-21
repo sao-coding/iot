@@ -26,7 +26,7 @@ const Content = ({ user }: { user: User }) => {
                         aggregateBy: [
                             {
                                 dataSourceId:
-                                    "derived:com.google.heart_rate.bpm:com.google.android.gms:resting_heart_rate<-merge_heart_rate_bpm",
+                                    "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
                             },
                         ],
                         bucketByTime: { durationMillis: 86400000 },
