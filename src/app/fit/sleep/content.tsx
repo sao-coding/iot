@@ -56,6 +56,12 @@ const Content = ({ user }: { user: User }) => {
             const date = new Date(parseInt(time))
             return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })
         }
+        // TimeNanos -> Time
+        if (type === "nanos") {
+            // xxxx-xx-xx -> TimeMillis zh-TW
+            const date = new Date(parseInt(time) / 1000000)
+            return date.toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })
+        }
     }
 
     return (
@@ -89,8 +95,8 @@ const Content = ({ user }: { user: User }) => {
                     data?.bucket[0]?.dataset[0].point.map((item) => {
                         return (
                             <div key={item.startTimeNanos}>
-                                <p>開始時間: {item.startTimeNanos}</p>
-                                <p>結束時間: {item.endTimeNanos}</p>
+                                <p>開始時間: {formatTime("nanos", item.startTimeNanos)}</p>
+                                <p>結束時間: {formatTime("nanos", item.endTimeNanos)}</p>
                                 {/* 三個 value 平均值:{" "} */}
                                 {/* 清醒 (在睡眠週期期間)	1
 舒眠	2
