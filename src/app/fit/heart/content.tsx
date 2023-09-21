@@ -26,7 +26,7 @@ const Content = ({ user }: { user: User }) => {
                         aggregateBy: [
                             {
                                 dataSourceId:
-                                    "derived:com.google.heart_rate.bpm:com.google.android.gms:resting_heart_rate<-merge_heart_rate_bpm",
+                                    "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
                             },
                         ],
                         bucketByTime: { durationMillis: 86400000 },
@@ -95,11 +95,10 @@ const Content = ({ user }: { user: User }) => {
                                 <p>結束時間: {formatTime("out", item.endTimeMillis)}</p>
                                 {/* 三個 value 平均值:{" "} */}
                                 <p>
-                                    心率:{" "}
-                                    {item.dataset[0].point[0].value.reduce((a, b) => {
-                                        return a + b.fpVal
-                                    }, 0) / item.dataset[0].point[0].value.length}
+                                    平均心率: {item.dataset[0].point[0].value[0].fpVal.toFixed(0)}
                                 </p>
+                                <p>最高心率: {item.dataset[0].point[0].value[1].fpVal}</p>
+                                <p>最低心率: {item.dataset[0].point[0].value[2].fpVal}</p>
                             </div>
                         )
                     })}
