@@ -3,13 +3,18 @@
 import { User } from "next-auth"
 import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
+import * as echarts from "echarts"
 import { Step } from "@/types"
 
 const Content = ({ user }: { user: User }) => {
     console.log({ user })
-    // 今天日期
-    const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10))
-    const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
+    // 開始日期 = 今天日期 - 1
+    const [startDate, setStartDate] = useState(
+        new Date(new Date().getTime() + 8 * 60 * 60 * 1000 - 86400000).toISOString().slice(0, 10)
+    )
+    const [endDate, setEndDate] = useState(
+        new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    )
 
     const { data, isLoading, isError, error } = useQuery<Step, Error>({
         queryKey: ["step", { startDate, endDate }],
@@ -44,6 +49,47 @@ const Content = ({ user }: { user: User }) => {
         const date = new Date(endDate)
         console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
     }, [endDate])
+
+    useEffect(() => {
+        // 把資料 步數 轉成陣列
+        const step = data?.bucket?.map((item) => {
+            return item.dataset[0].point[0].value[0].intVal
+        })
+        // 把資料 時間 轉成陣列
+        const date = data?.bucket.map((item) => {
+            // 轉換日期 xx/xx
+            return (
+                new Date(parseInt(item.startTimeMillis)).getMonth() +
+                1 +
+                "/" +
+                new Date(parseInt(item.startTimeMillis)).getDate()
+            )
+        })
+        let myChart = echarts.init(document.getElementById("main") as HTMLDivElement)
+        // 指定圖表的配置項和數據
+        let option = {
+            title: {
+                text: "步數",
+            },
+            tooltip: {},
+            legend: {
+                data: ["步數"],
+            },
+            xAxis: {
+                data: date ?? [],
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: "步數",
+                    type: "bar",
+                    data: step,
+                },
+            ],
+        }
+        // 使用剛指定的配置項和數據顯示圖表
+        myChart.setOption(option)
+    }, [data])
 
     const formatTime = (type: string, time: string) => {
         // TimeMillis -> Time
@@ -88,6 +134,7 @@ const Content = ({ user }: { user: User }) => {
                 {startDate} {"~"} {endDate}
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
+                <div id='main' style={{ width: "100%", height: "600px" }}></div>
                 {data?.bucket &&
                     data?.bucket.map((item) => {
                         return (
