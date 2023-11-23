@@ -53,7 +53,7 @@ const Content = ({ user }: { user: User }) => {
     useEffect(() => {
         // 把資料 步數 轉成陣列
         const step = data?.bucket?.map((item) => {
-            return item.dataset[0].point[0].value[0].intVal
+            return item.dataset[0].point[0]?.value[0]?.intVal
         })
         // 把資料 時間 轉成陣列
         const date = data?.bucket.map((item) => {
@@ -141,7 +141,7 @@ const Content = ({ user }: { user: User }) => {
                             <div key={item.startTimeMillis}>
                                 <p>開始時間: {formatTime("out", item.startTimeMillis)}</p>
                                 <p>結束時間: {formatTime("out", item.endTimeMillis)}</p>
-                                <p>步數: {item.dataset[0].point[0].value[0].intVal}</p>
+                                <p>步數: {item.dataset[0].point[0]?.value[0]?.intVal}</p>
                             </div>
                         )
                     })}
