@@ -9,17 +9,17 @@ import { Heart } from "@/types"
 const Content = ({ user }: { user: User }) => {
     console.log({ user })
     // 開始日期 = 今天日期 - 1
-    const [startDate, setStartDate] = useState(
+    const [chooseDate, setChooseDate] = useState(
         new Date(new Date().getTime() + 8 * 60 * 60 * 1000 - 86400000).toISOString().slice(0, 10)
     )
-    const [endDate, setEndDate] = useState(
-        new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
-    )
+    // const [endDate, setEndDate] = useState(
+    //     new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    // )
 
     const [chartType, setChartType] = useState("scatter")
 
     const { data, isLoading, isError, error } = useQuery<Heart, Error>({
-        queryKey: ["heart", { startDate, endDate }],
+        queryKey: ["heart", { startDate: chooseDate }],
         queryFn: async () => {
             const res = await fetch(
                 "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
@@ -36,9 +36,9 @@ const Content = ({ user }: { user: User }) => {
                                     "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
                             },
                         ],
-                        bucketByTime: { durationMillis: 86400000 },
-                        startTimeMillis: formatTime("in", startDate),
-                        endTimeMillis: formatTime("in", endDate),
+                        bucketByTime: { durationMillis: 1800000 },
+                        startTimeMillis: formatTime("in", chooseDate),
+                        endTimeMillis: Number(formatTime("in", chooseDate)) + 86400000,
                     }),
                 }
             )
@@ -46,10 +46,10 @@ const Content = ({ user }: { user: User }) => {
         },
     })
 
-    useEffect(() => {
-        const date = new Date(endDate)
-        console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
-    }, [endDate])
+    // useEffect(() => {
+    //     const date = new Date(endDate)
+    //     console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
+    // }, [endDate])
     // {
     //     "bucket": [
     //       {
@@ -226,22 +226,29 @@ const Content = ({ user }: { user: User }) => {
             return item.dataset[0].point[0]?.value[0].fpVal.toFixed(0)
         })
         const max = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[1].fpVal
+            return item.dataset[0].point[0]?.value[1].fpVal.toFixed(0)
         })
 
         const min = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[2].fpVal
+            return item.dataset[0].point[0]?.value[2].fpVal.toFixed(0)
         })
-        const date = data?.bucket.map((item) => {
-            // 轉換日期 xx/xx
-            return (
-                new Date(parseInt(item.startTimeMillis)).getMonth() +
-                1 +
-                "/" +
-                new Date(parseInt(item.startTimeMillis)).getDate()
-            )
+        // const date = data?.bucket.map((item) => {
+        //     // 轉換日期 xx/xx
+        //     return (
+        //         new Date(parseInt(item.startTimeMillis)).getMonth() +
+        //         1 +
+        //         "/" +
+        //         new Date(parseInt(item.startTimeMillis)).getDate()
+        //     )
+        // })
+        // time
+        const time = data?.bucket.map((item) => {
+            // 轉換 時間 xx:xx
+            return new Date(parseInt(item.startTimeMillis)).toLocaleTimeString("zh-TW", {
+                hour12: false,
+            })
         })
-        console.log("date", date)
+        console.log("time", time)
         console.log("avg", avg)
         console.log("max", max)
         console.log("min", min)
@@ -256,7 +263,7 @@ const Content = ({ user }: { user: User }) => {
                 data: ["平均心率", "最高心率", "最低心率"],
             },
             xAxis: {
-                data: date ?? [],
+                data: time ?? [],
             },
             yAxis: {},
             series: [
@@ -302,16 +309,16 @@ const Content = ({ user }: { user: User }) => {
         <div>
             <h1>Content</h1>
             <div className='space-x-5 p-4 text-center'>
-                起始日期
+                選擇日期
                 <input
                     type='date'
                     name=''
                     id=''
                     className='ml-2'
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    value={chooseDate}
+                    onChange={(e) => setChooseDate(e.target.value)}
                 />
-                結束日期
+                {/* 結束日期
                 <input
                     type='date'
                     name=''
@@ -319,7 +326,7 @@ const Content = ({ user }: { user: User }) => {
                     className='ml-2'
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                />
+                /> */}
             </div>
             <div className=''>
                 <select name='' id='' onChange={(e) => setChartType(e.target.value)}>
@@ -328,13 +335,13 @@ const Content = ({ user }: { user: User }) => {
                 </select>
             </div>
             <div className=''>
-                {startDate} {"~"} {endDate}
+                {chooseDate}
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
                 {/* {data?.bucket[0]?.dataset[0]?.point[0] && ( */}
                 <div id='main' style={{ width: "100%", height: "600px" }}></div>
                 {/* )} */}
-                {data?.bucket[0]?.dataset[0]?.point[0] &&
+                {data?.bucket[0]?.dataset[0] &&
                     data?.bucket.map((item) => {
                         return (
                             <div key={item.startTimeMillis}>
