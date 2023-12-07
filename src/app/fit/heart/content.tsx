@@ -9,17 +9,19 @@ import { Heart } from "@/types"
 const Content = ({ user }: { user: User }) => {
     console.log({ user })
     // 開始日期 = 今天日期 - 1
-    const [chooseDate, setChooseDate] = useState(
+    const [startDate, setStartDate] = useState(
         new Date(new Date().getTime() + 8 * 60 * 60 * 1000 - 86400000).toISOString().slice(0, 10)
     )
-    // const [endDate, setEndDate] = useState(
-    //     new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
-    // )
+    const [endDate, setEndDate] = useState(
+        new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    )
+
+    const [interval, setInterval] = useState(1800000)
 
     const [chartType, setChartType] = useState("scatter")
 
     const { data, isLoading, isError, error } = useQuery<Heart, Error>({
-        queryKey: ["heart", { startDate: chooseDate }],
+        queryKey: ["heart", startDate, endDate, interval],
         queryFn: async () => {
             const res = await fetch(
                 "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
@@ -36,9 +38,9 @@ const Content = ({ user }: { user: User }) => {
                                     "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
                             },
                         ],
-                        bucketByTime: { durationMillis: 1800000 },
-                        startTimeMillis: formatTime("in", chooseDate),
-                        endTimeMillis: Number(formatTime("in", chooseDate)) + 86400000,
+                        bucketByTime: { durationMillis: interval },
+                        startTimeMillis: formatTime("in", startDate),
+                        endTimeMillis: formatTime("in", endDate),
                     }),
                 }
             )
@@ -46,10 +48,10 @@ const Content = ({ user }: { user: User }) => {
         },
     })
 
-    // useEffect(() => {
-    //     const date = new Date(endDate)
-    //     console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
-    // }, [endDate])
+    useEffect(() => {
+        const date = new Date(endDate)
+        console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
+    }, [endDate])
     // {
     //     "bucket": [
     //       {
@@ -226,11 +228,11 @@ const Content = ({ user }: { user: User }) => {
             return item.dataset[0].point[0]?.value[0].fpVal.toFixed(0)
         })
         const max = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[1].fpVal.toFixed(0)
+            return item.dataset[0].point[0]?.value[1].fpVal
         })
 
         const min = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[2].fpVal.toFixed(0)
+            return item.dataset[0].point[0]?.value[2].fpVal
         })
         // const date = data?.bucket.map((item) => {
         //     // 轉換日期 xx/xx
@@ -241,13 +243,28 @@ const Content = ({ user }: { user: User }) => {
         //         new Date(parseInt(item.startTimeMillis)).getDate()
         //     )
         // })
-        // time
-        const time = data?.bucket.map((item) => {
-            // 轉換 時間 xx:xx
-            return new Date(parseInt(item.startTimeMillis)).toLocaleTimeString("zh-TW", {
-                hour12: false,
+        let time
+        if (interval === 86400000) {
+            time = data?.bucket.map((item) => {
+                // 轉換日期 xx/xx
+                return (
+                    new Date(parseInt(item.startTimeMillis)).getMonth() +
+                    1 +
+                    "/" +
+                    new Date(parseInt(item.startTimeMillis)).getDate()
+                )
             })
-        })
+        } else {
+            time = data?.bucket.map((item) => {
+                // 轉換 時間 xx:xx
+                return new Date(parseInt(item.startTimeMillis))
+                    .toLocaleTimeString("zh-TW", {
+                        hour12: false,
+                    })
+                    .slice(0, 5)
+            })
+        }
+
         console.log("time", time)
         console.log("avg", avg)
         console.log("max", max)
@@ -309,16 +326,16 @@ const Content = ({ user }: { user: User }) => {
         <div>
             <h1>Content</h1>
             <div className='space-x-5 p-4 text-center'>
-                選擇日期
+                起始日期
                 <input
                     type='date'
                     name=''
                     id=''
                     className='ml-2'
-                    value={chooseDate}
-                    onChange={(e) => setChooseDate(e.target.value)}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                 />
-                {/* 結束日期
+                結束日期
                 <input
                     type='date'
                     name=''
@@ -326,7 +343,17 @@ const Content = ({ user }: { user: User }) => {
                     className='ml-2'
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                /> */}
+                />
+                間隔時間
+                <select name='' id='' onChange={(e) => setInterval(parseInt(e.target.value))}>
+                    <option value='1800000'>30分鐘</option>
+                    <option value='3600000'>1小時</option>
+                    <option value='7200000'>2小時</option>
+                    <option value='14400000'>4小時</option>
+                    <option value='28800000'>8小時</option>
+                    <option value='43200000'>12小時</option>
+                    <option value='86400000'>24小時</option>
+                </select>
             </div>
             <div className=''>
                 <select name='' id='' onChange={(e) => setChartType(e.target.value)}>
@@ -335,7 +362,7 @@ const Content = ({ user }: { user: User }) => {
                 </select>
             </div>
             <div className=''>
-                {chooseDate}
+                {startDate} {"~"} {endDate}
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
                 {/* {data?.bucket[0]?.dataset[0]?.point[0] && ( */}
