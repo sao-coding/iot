@@ -228,11 +228,11 @@ const Content = ({ user }: { user: User }) => {
             return item.dataset[0].point[0]?.value[0].fpVal.toFixed(0)
         })
         const max = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[1].fpVal.toFixed(0)
+            return item.dataset[0].point[0]?.value[1].fpVal
         })
 
         const min = data?.bucket.map((item) => {
-            return item.dataset[0].point[0]?.value[2].fpVal.toFixed(0)
+            return item.dataset[0].point[0]?.value[2].fpVal
         })
         // const date = data?.bucket.map((item) => {
         //     // 轉換日期 xx/xx
