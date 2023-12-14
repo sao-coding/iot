@@ -366,7 +366,7 @@ const Content = ({ user }: { user: User }) => {
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
                 {/* {data?.bucket[0]?.dataset[0]?.point[0] && ( */}
-                <div id='main' style={{ width: "100%", height: "600px" }}></div>
+                {/* <div id='main' style={{ width: "100%", height: "600px" }}></div> */}
                 {/* )} */}
                 {data?.bucket[0]?.dataset[0] &&
                     data?.bucket.map((item) => {
