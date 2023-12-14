@@ -355,7 +355,7 @@ const Content = ({ user }: { user: User }) => {
                     <option value='86400000'>24小時</option>
                 </select>
             </div>
-            <div className=''>
+            <div className='hidden'>
                 <select name='' id='' onChange={(e) => setChartType(e.target.value)}>
                     <option value='scatter'>散點圖</option>
                     <option value='line'>折線圖</option>
@@ -366,7 +366,7 @@ const Content = ({ user }: { user: User }) => {
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
                 {/* {data?.bucket[0]?.dataset[0]?.point[0] && ( */}
-                {/* <div id='main' style={{ width: "100%", height: "600px" }}></div> */}
+                <div id='main' style={{ width: "100%", height: "600px" }} className='hidden'></div>
                 {/* )} */}
                 {data?.bucket[0]?.dataset[0] &&
                     data?.bucket.map((item) => {
