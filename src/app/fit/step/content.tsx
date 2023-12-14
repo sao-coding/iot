@@ -134,7 +134,7 @@ const Content = ({ user }: { user: User }) => {
                 {startDate} {"~"} {endDate}
                 {isLoading && <div>Loading...</div>}
                 {isError && <div>{error?.message}</div>}
-                <div id='main' style={{ width: "100%", height: "600px" }}></div>
+                {/* <div id='main' style={{ width: "100%", height: "600px" }}></div> */}
                 {data?.bucket &&
                     data?.bucket.map((item) => {
                         return (
