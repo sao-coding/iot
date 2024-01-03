@@ -383,7 +383,7 @@ const Content = ({ user }: { user: User }) => {
                             </div>
                         )
                     })}
-                <pre>資料{JSON.stringify(data, null, 1)}</pre>
+                {/* <pre>資料{JSON.stringify(data, null, 1)}</pre> */}
             </div>
         </div>
     )
