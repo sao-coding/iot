@@ -20,7 +20,7 @@ const IrremoteLogPage = () => {
                 <>
                     {data &&
                         data.map((log) => (
-                            <div>
+                            <div key={new Date(log.time).getTime()}>
                                 <div>類別: {log.name}</div>
                                 <div>裝置: {log.devices}</div>
                                 <div>訊號: {log.IR_signal}</div>
@@ -30,7 +30,7 @@ const IrremoteLogPage = () => {
                                         timeZone: "Asia/Taipei",
                                     })}
                                 </div>
-                                <hr className='border-2' />
+                                <hr className='border-2 my-1' />
                             </div>
                         ))}
                 </>
