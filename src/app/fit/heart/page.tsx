@@ -2,9 +2,10 @@
 
 // import { useState, useEffect } from "react"
 import { getServerSession } from "next-auth"
+
 import authOptions from "@/lib/auth"
+
 import Content from "./content"
-import { Step } from "@/types"
 
 // const getGoogleFitData = async () => {
 //     const session = await getServerSession(authOptions)
@@ -35,52 +36,52 @@ import { Step } from "@/types"
 // }
 
 const TestPage = async () => {
-    const session = await getServerSession(authOptions)
-    // const [data, setData] = useState([])
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const res = await fetch(
-    //             "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
-    //             {
-    //                 method: "POST",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     Authorization: `Bearer ya29.a0AfB_byCQ2yDbWDpEh8Q9LXNF1kM-Vct8v6Y23Qsoejn1SHYMgG2-hsIVkYYP2Hcm0rzKrFCgVekkvtmlMl74v3-oOa7zCwLA0lISxintztMxhBBZWKjwZHZvjVSA05jh8ExwluW4IryRFZTxGY1Gqf861Ebu9xh_dVvMogaCgYKAWsSARISFQHsvYlsEuHaLARjrQSIHIu8l9xc7g0173`,
-    //                 },
-    //                 body: JSON.stringify({
-    //                     aggregateBy: [
-    //                         {
-    //                             dataSourceId:
-    //                                 "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
-    //                         },
-    //                     ],
-    //                     bucketByTime: { durationMillis: 86400000 },
-    //                     startTimeMillis: 1692547200000,
-    //                     endTimeMillis: 1692627455410,
-    //                 }),
-    //             }
-    //         )
-    //         const data = await res.json()
-    //         console.log(data)
-    //         setData(data)
-    //     }
-    //     fetchData()
-    // }, [])
-    // const data: Step = await getGoogleFitData()
+  const session = await getServerSession(authOptions)
+  // const [data, setData] = useState([])
+  // useEffect(() => {
+  //     const fetchData = async () => {
+  //         const res = await fetch(
+  //             "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
+  //             {
+  //                 method: "POST",
+  //                 headers: {
+  //                     "Content-Type": "application/json",
+  //                     Authorization: `Bearer ya29.a0AfB_byCQ2yDbWDpEh8Q9LXNF1kM-Vct8v6Y23Qsoejn1SHYMgG2-hsIVkYYP2Hcm0rzKrFCgVekkvtmlMl74v3-oOa7zCwLA0lISxintztMxhBBZWKjwZHZvjVSA05jh8ExwluW4IryRFZTxGY1Gqf861Ebu9xh_dVvMogaCgYKAWsSARISFQHsvYlsEuHaLARjrQSIHIu8l9xc7g0173`,
+  //                 },
+  //                 body: JSON.stringify({
+  //                     aggregateBy: [
+  //                         {
+  //                             dataSourceId:
+  //                                 "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
+  //                         },
+  //                     ],
+  //                     bucketByTime: { durationMillis: 86400000 },
+  //                     startTimeMillis: 1692547200000,
+  //                     endTimeMillis: 1692627455410,
+  //                 }),
+  //             }
+  //         )
+  //         const data = await res.json()
+  //         console.log(data)
+  //         setData(data)
+  //     }
+  //     fetchData()
+  // }, [])
+  // const data: Step = await getGoogleFitData()
 
-    const formatTime = (time: string) => {
-        // TimeMillis -> Time
-        // 1694534400000 -> xxxx-xx-xx xx:xx:xx zh-TW
-        const date = new Date(parseInt(time))
-        return date.toLocaleString("zh-TW")
-    }
+  const formatTime = (time: string) => {
+    // TimeMillis -> Time
+    // 1694534400000 -> xxxx-xx-xx xx:xx:xx zh-TW
+    const date = new Date(parseInt(time))
+    return date.toLocaleString("zh-TW")
+  }
 
-    return (
-        <div>
-            <h1>Test Page</h1>
-            {session && <Content user={session.user} />}
-            {/* <pre>資料{JSON.stringify(data, null, 1)}</pre> */}
-            {/* {data.bucket.map((item) => {
+  return (
+    <div>
+      <h1>Test Page</h1>
+      {session && <Content user={session.user} />}
+      {/* <pre>資料{JSON.stringify(data, null, 1)}</pre> */}
+      {/* {data.bucket.map((item) => {
                 return (
                     <div key={item.startTimeMillis}>
                         <p>開始時間: {formatTime(item.startTimeMillis)}</p>
@@ -89,8 +90,8 @@ const TestPage = async () => {
                     </div>
                 )
             })} */}
-        </div>
-    )
+    </div>
+  )
 }
 
 export default TestPage

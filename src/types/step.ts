@@ -1,5 +1,5 @@
 export type Step = {
-    bucket: Bucket[]
+  bucket: Bucket[]
 }
 
 // {
@@ -26,24 +26,24 @@ export type Step = {
 //     ]
 //    },
 type Bucket = {
-    startTimeMillis: string
-    endTimeMillis: string
-    dataset: Dataset[]
+  startTimeMillis: string
+  endTimeMillis: string
+  dataset: Dataset[]
 }
 
 type Dataset = {
-    dataSourceId: string
-    point: Point[]
+  dataSourceId: string
+  point: Point[]
 }
 
 type Point = {
-    startTimeNanos: string
-    endTimeNanos: string
-    dataTypeName: string
-    originDataSourceId: string
-    value: Value[]
+  startTimeNanos: string
+  endTimeNanos: string
+  dataTypeName: string
+  originDataSourceId: string
+  value: Value[]
 }
 
 type Value = {
-    intVal: number
+  intVal: number
 }

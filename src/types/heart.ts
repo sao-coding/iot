@@ -32,29 +32,29 @@
 //     },
 
 export type Heart = {
-    bucket: Bucket[]
+  bucket: Bucket[]
 }
 
 type Bucket = {
-    startTimeMillis: string
-    endTimeMillis: string
-    dataset: Dataset[]
+  startTimeMillis: string
+  endTimeMillis: string
+  dataset: Dataset[]
 }
 
 type Dataset = {
-    dataSourceId: string
-    point: Point[]
+  dataSourceId: string
+  point: Point[]
 }
 
 type Point = {
-    startTimeNanos: string
-    endTimeNanos: string
-    dataTypeName: string
-    originDataSourceId: string
-    value: Value[]
+  startTimeNanos: string
+  endTimeNanos: string
+  dataTypeName: string
+  originDataSourceId: string
+  value: Value[]
 }
 
 type Value = {
-    fpVal: number
-    mapVal: any[]
+  fpVal: number
+  mapVal: any[]
 }

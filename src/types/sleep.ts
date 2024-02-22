@@ -20,29 +20,29 @@
 //         },
 
 export type Sleep = {
-    bucket: Bucket[]
+  bucket: Bucket[]
 }
 
 export type Bucket = {
-    startTimeMillis: string
-    endTimeMillis: string
-    dataset: Dataset[]
+  startTimeMillis: string
+  endTimeMillis: string
+  dataset: Dataset[]
 }
 
 export type Dataset = {
-    dataSourceId: string
-    point: Point[]
+  dataSourceId: string
+  point: Point[]
 }
 
 export type Point = {
-    startTimeNanos: string
-    endTimeNanos: string
-    dataTypeName: string
-    originDataSourceId: string
-    value: Value[]
+  startTimeNanos: string
+  endTimeNanos: string
+  dataTypeName: string
+  originDataSourceId: string
+  value: Value[]
 }
 
 export type Value = {
-    intVal: number
-    mapVal: any[]
+  intVal: number
+  mapVal: any[]
 }
