@@ -12,6 +12,7 @@ export const POST = async (req: NextRequest) => {
   // const data = await res2.json()
   // console.log(data)
   // return NextResponse.json(data)
+
   // {
   //     "devices": "fan",
   //     "name": "電風扇",
