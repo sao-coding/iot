@@ -35,13 +35,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  settings      settings[]
 }
 
 model VerificationToken {
@@ -104,4 +105,14 @@ model aircon {
   H_swing   String?  @map("H-swing") @db.Text
   V_swing   String?  @map("V-swing") @db.Text
   time      DateTime @default(now()) @db.Timestamp(0)
+}
+
+model settings {
+  id           String   @id @default(cuid())
+  userId       String
+  maxHeartRate Decimal  @db.Decimal(3, 0)
+  minHeartRate Decimal  @db.Decimal(3, 0)
+  stepGoal     Decimal  @db.Decimal(5, 0)
+  time         DateTime @default(now()) @db.Timestamp(0)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
