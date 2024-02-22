@@ -1,10 +1,19 @@
 import { DefaultSession } from "next-auth"
 
+type UserId = string
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: UserId
+  }
+}
+
 declare module "next-auth" {
-    interface Session {
-        user: {
-            accessToken: string
-        } & DefaultSession["user"]
-    }
-    type User = DatabaseUser
+  interface Session {
+    user: {
+      id: UserId
+      accessToken: string
+    } & DefaultSession["user"]
+  }
+  type User = DatabaseUser
 }
