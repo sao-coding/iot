@@ -34,6 +34,9 @@ const FitPage = async () => {
         <Link href='/fit/sleep' className='flex rounded-xl border p-2 hover:bg-gray-200'>
           Sleep
         </Link>
+        <Link href='/fit/settings' className='flex rounded-xl border p-2 hover:bg-gray-200'>
+          設定
+        </Link>
       </div>
     </div>
   )

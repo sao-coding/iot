@@ -71,13 +71,18 @@ const Content = ({ user }: { user: User }) => {
       },
       tooltip: {},
       legend: {
-        data: ["步數"]
+        data: ["推薦步數", "步數"]
       },
       xAxis: {
         data: date ?? []
       },
       yAxis: {},
       series: [
+        {
+          name: "推薦步數",
+          type: "bar",
+          data: Array(step?.length).fill(7500)
+        },
         {
           name: "步數",
           type: "bar",
