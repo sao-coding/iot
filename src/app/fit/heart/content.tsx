@@ -19,7 +19,8 @@ const Content = ({ user }: { user: User }) => {
 
   const [interval, setInterval] = useState(1800000)
 
-  const [chartType, setChartType] = useState("scatter")
+  type ChartType = "scatter" | "line"
+  const [chartType, setChartType] = useState<ChartType>("scatter")
 
   const { data, isLoading, isError, error } = useQuery<Heart, Error>({
     queryKey: ["heart", startDate, endDate, interval],
@@ -223,14 +224,14 @@ const Content = ({ user }: { user: User }) => {
   useEffect(() => {
     // 把資料 平均值 最高值 最低值個轉成一個陣列
     const avg = data?.bucket.map((item) => {
-      return item.dataset[0].point[0]?.value[0].fpVal.toFixed(0)
+      return Number(item.dataset[0].point[0]?.value[0].fpVal)
     })
     const max = data?.bucket.map((item) => {
-      return item.dataset[0].point[0]?.value[1].fpVal
+      return Number(item.dataset[0].point[0]?.value[1].fpVal)
     })
 
     const min = data?.bucket.map((item) => {
-      return item.dataset[0].point[0]?.value[2].fpVal
+      return Number(item.dataset[0].point[0]?.value[2].fpVal)
     })
     // const date = data?.bucket.map((item) => {
     //     // 轉換日期 xx/xx
@@ -269,7 +270,7 @@ const Content = ({ user }: { user: User }) => {
     console.log("min", min)
     let myChart = echarts.init(document.getElementById("main") as HTMLDivElement)
     // 指定圖表的配置項和數據
-    let option = {
+    let option: echarts.EChartsOption = {
       title: {
         text: "心率"
       },
@@ -285,17 +286,57 @@ const Content = ({ user }: { user: User }) => {
         {
           name: "平均心率",
           type: chartType,
-          data: avg
+          data: avg,
+          // 若資料大於 100 為紅色 小於 100 不設定顏色 不到 60 為紅色
+          itemStyle: {
+            color: (params: any) => {
+              // return (params.value as number) > 100 ? "red" : "#768ccd"
+              if ((params.value as number) > 100) {
+                return "red"
+              }
+              if ((params.value as number) < 60) {
+                return "red"
+              }
+              return "#768ccd"
+            }
+          }
         },
         {
           name: "最高心率",
           type: chartType,
-          data: max
+          data: max,
+          // 若資料大於 100 為紅色 小於 100 為綠色
+          itemStyle: {
+            color: (params: any) => {
+              // return (params.value as number) > 100 ? "red" : "#a8d494"
+              // // return (params.value as number) > 100 && (params.value as number) < 60
+              if ((params.value as number) > 100) {
+                return "red"
+              }
+              if ((params.value as number) < 60) {
+                return "red"
+              }
+              return "#a8d494"
+            }
+          }
         },
         {
           name: "最低心率",
           type: chartType,
-          data: min
+          data: min,
+          // 若資料大於 100 為紅色 小於 100 為綠色
+          itemStyle: {
+            color: (params: any) => {
+              // return (params.value as number) > 100 ? "red" : "#f9d281"
+              if ((params.value as number) > 100) {
+                return "red"
+              }
+              if ((params.value as number) < 60) {
+                return "red"
+              }
+              return "#f9d281"
+            }
+          }
         }
       ]
     }
@@ -353,8 +394,8 @@ const Content = ({ user }: { user: User }) => {
           <option value='86400000'>24小時</option>
         </select>
       </div>
-      <div className='hidden'>
-        <select name='' id='' onChange={(e) => setChartType(e.target.value)}>
+      <div className=''>
+        <select name='' id='' onChange={(e) => setChartType(e.target.value as ChartType)}>
           <option value='scatter'>散點圖</option>
           <option value='line'>折線圖</option>
         </select>

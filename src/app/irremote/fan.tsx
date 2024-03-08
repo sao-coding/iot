@@ -4,6 +4,7 @@ import { Device } from "@/types"
 
 const Fan = ({ device }: { device: Device }) => {
   const control = async (signal: string) => {
+    const toastIdFan = toast.loading("傳送中")
     const res = await fetch("/api/irremote", {
       method: "POST",
       body: JSON.stringify({
@@ -14,9 +15,9 @@ const Fan = ({ device }: { device: Device }) => {
     })
 
     if (res.ok) {
-      toast.success("成功")
+      toast.success("成功", { id: toastIdFan })
     } else {
-      toast.error("失敗")
+      toast.error("失敗", { id: toastIdFan })
     }
   }
 

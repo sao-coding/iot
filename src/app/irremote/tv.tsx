@@ -4,6 +4,7 @@ import { Device } from "@/types"
 
 const TV = ({ device }: { device: Device }) => {
   const control = async (signal: string) => {
+    const toastIdTv = toast.loading("傳送中")
     const res = await fetch("/api/irremote", {
       method: "POST",
       body: JSON.stringify({
@@ -14,9 +15,9 @@ const TV = ({ device }: { device: Device }) => {
     })
 
     if (res.ok) {
-      toast.success("成功")
+      toast.success("成功", { id: toastIdTv })
     } else {
-      toast.error("失敗")
+      toast.error("失敗", { id: toastIdTv })
     }
   }
 
@@ -53,7 +54,7 @@ const TV = ({ device }: { device: Device }) => {
           </button>
         ))}
         {[...Array(3)].map((_, i) => (
-          <>
+          <div key={i}>
             {i !== 1 ? (
               <div className='flex h-32 items-center justify-center rounded-xl border p-2'></div>
             ) : (
@@ -65,7 +66,7 @@ const TV = ({ device }: { device: Device }) => {
                 <div className='text-xl font-bold'>{i - 1}</div>
               </button>
             )}
-          </>
+          </div>
         ))}
       </div>
     </>
