@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { User } from "next-auth"
 import * as echarts from "echarts"
+import toast from "react-hot-toast"
 
 import { Step } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -50,9 +51,11 @@ const Content = ({ user }: { user: User }) => {
 
   useEffect(() => {
     // 把資料 步數 轉成陣列
-    const step = data?.bucket?.map((item) => {
-      return item.dataset[0].point[0]?.value[0]?.intVal
-    })
+    const step =
+      data?.bucket?.map((item) => {
+        return item.dataset[0].point[0]?.value[0]?.intVal
+      }) ?? []
+
     // 把資料 時間 轉成陣列
     const date = data?.bucket.map((item) => {
       // 轉換日期 xx/xx
@@ -65,7 +68,7 @@ const Content = ({ user }: { user: User }) => {
     })
     let myChart = echarts.init(document.getElementById("main") as HTMLDivElement)
     // 指定圖表的配置項和數據
-    let option = {
+    let option: echarts.EChartsOption = {
       title: {
         text: "步數"
       },
@@ -79,14 +82,15 @@ const Content = ({ user }: { user: User }) => {
       yAxis: {},
       series: [
         {
-          name: "推薦步數",
-          type: "bar",
-          data: Array(step?.length).fill(7500)
-        },
-        {
           name: "步數",
           type: "bar",
-          data: step
+          // 判斷每筆資料是否大於7500 大於7500為綠色 小於7500為紅色
+          data: step ?? [],
+          itemStyle: {
+            color: (params) => {
+              return (params.value as number) > 7500 ? "green" : "red"
+            }
+          }
         }
       ]
     }
@@ -121,7 +125,14 @@ const Content = ({ user }: { user: User }) => {
           id=''
           className='ml-2'
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          // 開始日期不能大於結束日期
+          onChange={(e) => {
+            if (e.target.value > endDate) {
+              toast.error("開始日期不能大於結束日期")
+            } else {
+              setStartDate(e.target.value)
+            }
+          }}
         />
         結束日期
         <input

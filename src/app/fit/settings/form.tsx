@@ -1,12 +1,13 @@
 "use client"
 import React from "react"
 import { User } from "next-auth"
+import toast from "react-hot-toast"
 const Form = ({ user }: { user: User }) => {
   // const [maxHeartRate, setMaxHeartRate] = React.useState(0)
   // const [minHeartRate, setMinHeartRate] = React.useState(0)
   // const [stepGoal, setStepGoal] = React.useState(0)
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const FormMaxHeartRate = event.currentTarget.elements.namedItem(
@@ -28,23 +29,36 @@ const Form = ({ user }: { user: User }) => {
     console.log("minHeartRate", FormMinHeartRate.value)
     console.log("stepGoal", FormStepGoal.value)
     console.log("userId", user.id)
-    fetch("/api/settings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userId: user.id,
-        maxHeartRate: FormMaxHeartRate.value,
-        minHeartRate: FormMinHeartRate.value,
-        stepGoal: FormStepGoal.value,
-        time: new Date()
-      })
-    })
+    const toastId = toast.loading("傳送中")
+
+    // 等待 2 秒
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    toast.success("成功", { id: toastId })
+
+    // const res = await fetch("/api/settings", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify({
+    //     userId: user.id,
+    //     maxHeartRate: FormMaxHeartRate.value,
+    //     minHeartRate: FormMinHeartRate.value,
+    //     stepGoal: FormStepGoal.value,
+    //     time: new Date()
+    //   })
+    // })
+
+    // if (res.ok) {
+    //   toast.success("成功", { id: toastId })
+    // } else {
+    //   toast.error("失敗", { id: toastId })
+    // }
   }
 
   return (
-    <div>
+    <div className='p-4'>
       <h2>設定</h2>
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <label>
@@ -59,7 +73,9 @@ const Form = ({ user }: { user: User }) => {
           步數目標
           <input type='number' id='stepGoal' />
         </label>
-        <button type='submit'>儲存</button>
+        <button type='submit' className='rounded-md bg-blue-500 px-4 py-2 text-white'>
+          儲存
+        </button>
       </form>
     </div>
   )

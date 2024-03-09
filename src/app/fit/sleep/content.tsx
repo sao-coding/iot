@@ -62,6 +62,17 @@ const Content = ({ user }: { user: User }) => {
     }
   }
 
+  // 計算一天總睡眠時數 扣掉清醒時間 intVal === 1
+  const daySleep = (data: Sleep) => {
+    let sleepTime = 0
+    data.bucket[0]?.dataset[0].point.map((item) => {
+      if (item.value[0].intVal !== 1) {
+        sleepTime += (Number(item.endTimeNanos) - Number(item.startTimeNanos)) / 1000000000
+      }
+    })
+    return Number(sleepTime / 3600).toFixed(1)
+  }
+
   return (
     <div>
       <h1>Content</h1>
@@ -85,6 +96,7 @@ const Content = ({ user }: { user: User }) => {
           onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
+      <div className=''>今天睡眠時間: {data ? daySleep(data) : 0} 小時</div>
       <div className=''>
         {startDate} {"~"} {endDate}
         {isLoading && <div>Loading...</div>}
@@ -93,24 +105,30 @@ const Content = ({ user }: { user: User }) => {
           data?.bucket[0]?.dataset[0].point.map((item) => {
             return (
               <div key={item.startTimeNanos}>
-                <p>開始時間: {formatTime("nanos", item.startTimeNanos)}</p>
-                <p>結束時間: {formatTime("nanos", item.endTimeNanos)}</p>
-                {/* 三個 value 平均值:{" "} */}
-                {/* 清醒 (在睡眠週期期間)	1
-舒眠	2
-床/床外	3
-淺層睡眠	4
-深層睡眠	5
-快速動眼期	6 */}
-                <p>
-                  睡眠階段類型:
-                  {item.value[0].intVal === 1 && "清醒"}
-                  {item.value[0].intVal === 2 && "舒眠"}
-                  {item.value[0].intVal === 3 && "床/床外"}
-                  {item.value[0].intVal === 4 && "淺層睡眠"}
-                  {item.value[0].intVal === 5 && "深層睡眠"}
-                  {item.value[0].intVal === 6 && "快速動眼期"}
-                </p>
+                {item.value[0].intVal !== 1 && (
+                  <>
+                    <p>開始時間: {formatTime("nanos", item.startTimeNanos)}</p>
+                    <p>結束時間: {formatTime("nanos", item.endTimeNanos)}</p>
+                    {/* 三個 value 平均值:{" "} */}
+                    {/* 
+                    清醒 (在睡眠週期期間)	1
+                    舒眠	2
+                    床/床外	3
+                    淺層睡眠	4
+                    深層睡眠	5
+                    快速動眼期	6 
+                */}
+                    <p>
+                      睡眠階段類型:
+                      {item.value[0].intVal === 1 && "清醒"}
+                      {item.value[0].intVal === 2 && "舒眠"}
+                      {item.value[0].intVal === 3 && "床/床外"}
+                      {item.value[0].intVal === 4 && "淺層睡眠"}
+                      {item.value[0].intVal === 5 && "深層睡眠"}
+                      {item.value[0].intVal === 6 && "快速動眼期"}
+                    </p>
+                  </>
+                )}
               </div>
             )
           })}
