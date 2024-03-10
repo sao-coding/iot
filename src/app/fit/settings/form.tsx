@@ -63,15 +63,15 @@ const Form = ({ user }: { user: User }) => {
       <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <label>
           最高心率標準
-          <input type='number' id='maxHeartRate' value='160' />
+          <input type='number' id='maxHeartRate' defaultValue='100' />
         </label>
         <label>
           最低心率標準
-          <input type='number' id='minHeartRate' value='60' />
+          <input type='number' id='minHeartRate' defaultValue='60' />
         </label>
         <label>
           步數目標
-          <input type='number' id='stepGoal' value='7500' />
+          <input type='number' id='stepGoal' defaultValue='7500' />
         </label>
         <button type='submit' className='rounded-md bg-blue-500 px-4 py-2 text-white'>
           儲存
