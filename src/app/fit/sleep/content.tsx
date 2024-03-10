@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { User } from "next-auth"
 import * as echarts from "echarts"
+
 import { Sleep } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
@@ -13,7 +14,7 @@ const Content = ({ user }: { user: User }) => {
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
   type SleepList = {
     date: string
-    time : number
+    time: number
   }
   const [daySleepList, setDaySleepList] = useState<SleepList[]>([])
 
@@ -87,7 +88,7 @@ const Content = ({ user }: { user: User }) => {
     console.log("dayList", dayList)
 
     // 一天的睡眠時間
-     const SleepList: SleepList[] = []
+    const SleepList: SleepList[] = []
     for (let i = 0; i < dayList.length; i++) {
       console.log("dayList[i]", dayList[i])
       // 一天的睡眠時間
@@ -97,12 +98,13 @@ const Content = ({ user }: { user: User }) => {
         if (dayList[i].getDate() === date.getDate()) {
           // 扣掉清醒時間
           if (item.value[0].intVal !== 1) {
-            daySleep += (parseInt(item.endTimeNanos) - parseInt(item.startTimeNanos)) / 1000000000 / 60 / 60
+            daySleep +=
+              (parseInt(item.endTimeNanos) - parseInt(item.startTimeNanos)) / 1000000000 / 60 / 60
           }
         }
       })
       // daySleepList.push({date: dayList[i].toLocaleDateString(), time: daySleep})
-      SleepList.push({date: dayList[i].toLocaleDateString(), time: daySleep})
+      SleepList.push({ date: dayList[i].toLocaleDateString(), time: daySleep })
     }
     setDaySleepList(SleepList)
   }, [data])
@@ -133,15 +135,16 @@ const Content = ({ user }: { user: User }) => {
           data: daySleepList.map((item) => item.time.toFixed(2)),
           itemStyle: {
             color: (params) => {
-              return (params.value as number) <= 8 && (params.value as number) >= 6 ? "green" : "red"
+              return (params.value as number) <= 8 && (params.value as number) >= 6
+                ? "green"
+                : "red"
             }
           }
         }
       ]
     }
     myChart.setOption(option)
-
-    },[daySleepList])
+  }, [daySleepList])
 
   return (
     <div>

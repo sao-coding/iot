@@ -71,7 +71,7 @@ const Form = ({ user }: { user: User }) => {
         </label>
         <label>
           步數目標
-          <input type='number' id='stepGoal' value="7500" />
+          <input type='number' id='stepGoal' value='7500' />
         </label>
         <button type='submit' className='rounded-md bg-blue-500 px-4 py-2 text-white'>
           儲存
