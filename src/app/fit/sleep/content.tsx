@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { User } from "next-auth"
-
+import * as echarts from "echarts"
 import { Sleep } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
@@ -11,6 +11,11 @@ const Content = ({ user }: { user: User }) => {
   // 今天日期
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10))
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10))
+  type SleepList = {
+    date: string
+    time : number
+  }
+  const [daySleepList, setDaySleepList] = useState<SleepList[]>([])
 
   const { data, isLoading, isError, error } = useQuery<Sleep, Error>({
     queryKey: ["sleep", { startDate, endDate }],
@@ -63,15 +68,80 @@ const Content = ({ user }: { user: User }) => {
   }
 
   // 計算一天總睡眠時數 扣掉清醒時間 intVal === 1
-  const daySleep = (data: Sleep) => {
-    let sleepTime = 0
-    data.bucket[0]?.dataset[0].point.map((item) => {
-      if (item.value[0].intVal !== 1) {
-        sleepTime += (Number(item.endTimeNanos) - Number(item.startTimeNanos)) / 1000000000
-      }
-    })
-    return Number(sleepTime / 3600).toFixed(1)
-  }
+  useEffect(() => {
+    if (!data) return
+
+    // 2024-03-05 轉換成 Date
+    const startTime = new Date(startDate)
+    const endTime = new Date(endDate)
+
+    console.log("startTime", startTime)
+    console.log("endTime", endTime)
+
+    // 開始日期到結束日期 有幾個日期
+
+    const dayList: Date[] = []
+    for (let i = startTime; i <= endTime; i.setDate(i.getDate() + 1)) {
+      dayList.push(new Date(i))
+    }
+    console.log("dayList", dayList)
+
+    // 一天的睡眠時間
+     const SleepList: SleepList[] = []
+    for (let i = 0; i < dayList.length; i++) {
+      console.log("dayList[i]", dayList[i])
+      // 一天的睡眠時間
+      let daySleep = 0
+      data?.bucket[0]?.dataset[0].point.map((item) => {
+        const date = new Date(parseInt(item.endTimeNanos) / 1000000)
+        if (dayList[i].getDate() === date.getDate()) {
+          // 扣掉清醒時間
+          if (item.value[0].intVal !== 1) {
+            daySleep += (parseInt(item.endTimeNanos) - parseInt(item.startTimeNanos)) / 1000000000 / 60 / 60
+          }
+        }
+      })
+      // daySleepList.push({date: dayList[i].toLocaleDateString(), time: daySleep})
+      SleepList.push({date: dayList[i].toLocaleDateString(), time: daySleep})
+    }
+    setDaySleepList(SleepList)
+  }, [data])
+
+  useEffect(() => {
+    console.log("daySleepList", daySleepList)
+  }, [daySleepList])
+
+  useEffect(() => {
+    // 轉換 睡眠時間 變成柱狀圖
+    let myChart = echarts.init(document.getElementById("main") as HTMLDivElement)
+    let option: echarts.EChartsOption = {
+      title: {
+        text: "睡眠"
+      },
+      tooltip: {},
+      legend: {
+        data: ["睡眠時間"]
+      },
+      xAxis: {
+        data: daySleepList.map((item) => item.date)
+      },
+      yAxis: {},
+      series: [
+        {
+          name: "睡眠時間",
+          type: "bar",
+          data: daySleepList.map((item) => item.time.toFixed(2)),
+          itemStyle: {
+            color: (params) => {
+              return (params.value as number) <= 8 && (params.value as number) >= 6 ? "green" : "red"
+            }
+          }
+        }
+      ]
+    }
+    myChart.setOption(option)
+
+    },[daySleepList])
 
   return (
     <div>
@@ -96,7 +166,16 @@ const Content = ({ user }: { user: User }) => {
           onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
-      <div className=''>今天睡眠時間: {data ? daySleep(data) : 0} 小時</div>
+      <div id='main' style={{ width: "100%", height: "600px" }}></div>
+      <div className=''>
+        {daySleepList.map((item, index) => {
+          return (
+            <div key={index}>
+              {item.date} {item.time.toFixed(2)} 小時
+            </div>
+          )
+        })}
+      </div>
       <div className=''>
         {startDate} {"~"} {endDate}
         {isLoading && <div>Loading...</div>}
@@ -107,8 +186,8 @@ const Content = ({ user }: { user: User }) => {
               <div key={item.startTimeNanos}>
                 {item.value[0].intVal !== 1 && (
                   <>
-                    <p>開始時間: {formatTime("nanos", item.startTimeNanos)}</p>
-                    <p>結束時間: {formatTime("nanos", item.endTimeNanos)}</p>
+                    <p>開始時間: {formatTime("nanos", item.startTimeNanos) as string}</p>
+                    <p>結束時間: {formatTime("nanos", item.endTimeNanos) as string}</p>
                     {/* 三個 value 平均值:{" "} */}
                     {/* 
                     清醒 (在睡眠週期期間)	1
