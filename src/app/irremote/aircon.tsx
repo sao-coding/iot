@@ -4,21 +4,24 @@ import { Device } from "@/types"
 
 const Aircon = ({ device }: { device: Device }) => {
   const control = async (signal: string) => {
-    const toastIdAircon = toast.loading("傳送中")
-    const res = await fetch("/api/irremote", {
-      method: "POST",
-      body: JSON.stringify({
-        devices: device.device,
-        name: device.name,
-        signal: signal
-      })
-    })
+    const toastId = toast.loading("傳送中")
+    // 等待 1 秒
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    toast.success("成功", { id: toastId })
+    // const res = await fetch("/api/irremote", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     devices: device.device,
+    //     name: device.name,
+    //     signal: signal
+    //   })
+    // })
 
-    if (res.ok) {
-      toast.success("成功", { id: toastIdAircon })
-    } else {
-      toast.error("失敗", { id: toastIdAircon })
-    }
+    // if (res.ok) {
+    //   toast.success("成功", { id: toastId })
+    // } else {
+    //   toast.error("失敗", { id: toastId })
+    // }
   }
 
   return (
