@@ -18,6 +18,11 @@ const Content = ({ user }: { user: User }) => {
   )
 
   const [interval, setInterval] = useState(1800000)
+  const [settings, setSettings] = useState({
+    maxHeartRate: 100,
+    minHeartRate: 60,
+    stepGoal: 7500
+  })
 
   type ChartType = "scatter" | "line"
   const [chartType, setChartType] = useState<ChartType>("scatter")
@@ -48,178 +53,18 @@ const Content = ({ user }: { user: User }) => {
   })
 
   useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/settings")
+      const data = await res.json()
+      setSettings(data)
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
     const date = new Date(endDate)
     console.log("date useEffect", date.getTime() - 8 * 60 * 60 * 1000)
   }, [endDate])
-  // {
-  //     "bucket": [
-  //       {
-  //         "startTimeMillis": "1699804800000",
-  //         "endTimeMillis": "1699891200000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": [
-  //               {
-  //                 "startTimeNanos": "1699838930418956800",
-  //                 "endTimeNanos": "1699891055458299136",
-  //                 "dataTypeName": "com.google.heart_rate.summary",
-  //                 "originDataSourceId": "derived:com.google.heart_rate.bpm:com.google.ios.fit:appleinc.:watch:a1f38427:top_level",
-  //                 "value": [
-  //                   {
-  //                     "fpVal": 75.279205133122147,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 119,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 55.797481536865234,
-  //                     "mapVal": []
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "startTimeMillis": "1699891200000",
-  //         "endTimeMillis": "1699977600000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": [
-  //               {
-  //                 "startTimeNanos": "1699891384468514560",
-  //                 "endTimeNanos": "1699955673941447680",
-  //                 "dataTypeName": "com.google.heart_rate.summary",
-  //                 "originDataSourceId": "derived:com.google.heart_rate.bpm:com.google.ios.fit:appleinc.:watch:a1f38427:top_level",
-  //                 "value": [
-  //                   {
-  //                     "fpVal": 74.045629485596024,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 135,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 47.897388458251953,
-  //                     "mapVal": []
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "startTimeMillis": "1699977600000",
-  //         "endTimeMillis": "1700064000000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": [
-  //               {
-  //                 "startTimeNanos": "1699978987670466816",
-  //                 "endTimeNanos": "1700038606455666176",
-  //                 "dataTypeName": "com.google.heart_rate.summary",
-  //                 "originDataSourceId": "derived:com.google.heart_rate.bpm:com.google.ios.fit:appleinc.:watch:a1f38427:top_level",
-  //                 "value": [
-  //                   {
-  //                     "fpVal": 77.305339154703361,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 120,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 52,
-  //                     "mapVal": []
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "startTimeMillis": "1700064000000",
-  //         "endTimeMillis": "1700150400000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": [
-  //               {
-  //                 "startTimeNanos": "1700065708875809024",
-  //                 "endTimeNanos": "1700150343507628032",
-  //                 "dataTypeName": "com.google.heart_rate.summary",
-  //                 "originDataSourceId": "derived:com.google.heart_rate.bpm:com.google.ios.fit:appleinc.:watch:a1f38427:top_level",
-  //                 "value": [
-  //                   {
-  //                     "fpVal": 65.033522383983012,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 111,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 50,
-  //                     "mapVal": []
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "startTimeMillis": "1700150400000",
-  //         "endTimeMillis": "1700236800000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": [
-  //               {
-  //                 "startTimeNanos": "1700150646476517120",
-  //                 "endTimeNanos": "1700235666230422528",
-  //                 "dataTypeName": "com.google.heart_rate.summary",
-  //                 "originDataSourceId": "derived:com.google.heart_rate.bpm:com.google.ios.fit:appleinc.:watch:a1f38427:top_level",
-  //                 "value": [
-  //                   {
-  //                     "fpVal": 89.238079987070051,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 134,
-  //                     "mapVal": []
-  //                   },
-  //                   {
-  //                     "fpVal": 58,
-  //                     "mapVal": []
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "startTimeMillis": "1700236800000",
-  //         "endTimeMillis": "1700323200000",
-  //         "dataset": [
-  //           {
-  //             "dataSourceId": "derived:com.google.heart_rate.summary:com.google.android.gms:aggregated",
-  //             "point": []
-  //           }
-  //         ]
-  //       }
-  //     ]
-  //   }
 
   useEffect(() => {
     // 把資料 平均值 最高值 最低值個轉成一個陣列
@@ -291,10 +136,10 @@ const Content = ({ user }: { user: User }) => {
           itemStyle: {
             color: (params: any) => {
               // return (params.value as number) > 100 ? "red" : "#768ccd"
-              if ((params.value as number) > 100) {
+              if ((params.value as number) > settings.maxHeartRate) {
                 return "red"
               }
-              if ((params.value as number) < 60) {
+              if ((params.value as number) < settings.minHeartRate) {
                 return "red"
               }
               return "#768ccd"
@@ -310,10 +155,10 @@ const Content = ({ user }: { user: User }) => {
             color: (params: any) => {
               // return (params.value as number) > 100 ? "red" : "#a8d494"
               // // return (params.value as number) > 100 && (params.value as number) < 60
-              if ((params.value as number) > 100) {
+              if ((params.value as number) > settings.maxHeartRate) {
                 return "red"
               }
-              if ((params.value as number) < 60) {
+              if ((params.value as number) < settings.minHeartRate) {
                 return "red"
               }
               return "#a8d494"
@@ -328,10 +173,10 @@ const Content = ({ user }: { user: User }) => {
           itemStyle: {
             color: (params: any) => {
               // return (params.value as number) > 100 ? "red" : "#f9d281"
-              if ((params.value as number) > 100) {
+              if ((params.value as number) > settings.maxHeartRate) {
                 return "red"
               }
-              if ((params.value as number) < 60) {
+              if ((params.value as number) < settings.minHeartRate) {
                 return "red"
               }
               return "#f9d281"
@@ -343,7 +188,7 @@ const Content = ({ user }: { user: User }) => {
     // 使用剛指定的配置項和數據顯示圖表。
     console.log("option", option)
     myChart.setOption(option)
-  }, [data, chartType])
+  }, [data, chartType, settings])
 
   const formatTime = (type: string, time: string) => {
     // TimeMillis -> Time

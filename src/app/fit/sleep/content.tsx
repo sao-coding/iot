@@ -18,6 +18,12 @@ const Content = ({ user }: { user: User }) => {
   }
   const [daySleepList, setDaySleepList] = useState<SleepList[]>([])
 
+  const [settings, setSettings] = useState({
+    maxHeartRate: 100,
+    minHeartRate: 60,
+    stepGoal: 7500
+  })
+
   const { data, isLoading, isError, error } = useQuery<Sleep, Error>({
     queryKey: ["sleep", { startDate, endDate }],
     queryFn: async () => {

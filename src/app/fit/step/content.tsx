@@ -18,6 +18,12 @@ const Content = ({ user }: { user: User }) => {
     new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10)
   )
 
+  const [settings, setSettings] = useState({
+    maxHeartRate: 100,
+    minHeartRate: 60,
+    stepGoal: 7500
+  })
+
   const { data, isLoading, isError, error } = useQuery<Step, Error>({
     queryKey: ["step", { startDate, endDate }],
     queryFn: async () => {
@@ -43,6 +49,15 @@ const Content = ({ user }: { user: User }) => {
       return await res.json()
     }
   })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/settings")
+      const data = await res.json()
+      setSettings(data)
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const date = new Date(endDate)
@@ -88,7 +103,7 @@ const Content = ({ user }: { user: User }) => {
           data: step ?? [],
           itemStyle: {
             color: (params) => {
-              return (params.value as number) > 7500 ? "green" : "red"
+              return (params.value as number) > settings.stepGoal ? "green" : "red"
             }
           }
         }
@@ -96,7 +111,7 @@ const Content = ({ user }: { user: User }) => {
     }
     // 使用剛指定的配置項和數據顯示圖表
     myChart.setOption(option)
-  }, [data])
+  }, [data, settings])
 
   const formatTime = (type: string, time: string) => {
     // TimeMillis -> Time
