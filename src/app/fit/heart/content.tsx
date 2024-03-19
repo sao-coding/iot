@@ -121,18 +121,56 @@ const Content = ({ user }: { user: User }) => {
       },
       tooltip: {},
       legend: {
-        data: ["平均心率", "最高心率", "最低心率"]
+        data: ["平均心率", "最高心率", "最低心率", "異常心率"]
       },
       xAxis: {
         data: time ?? []
       },
       yAxis: {},
+      color: ["#a8d494", "#768ccd", "#f9d281", "red"],
       series: [
         {
           name: "平均心率",
           type: chartType,
           data: avg,
           // 若資料大於 100 為紅色 小於 100 不設定顏色 不到 60 為紅色
+          itemStyle: {
+            color: (params: any) => {
+              // return (params.value as number) > 100 ? "red" : "#a8d494"
+              if ((params.value as number) > settings.maxHeartRate) {
+                return "red"
+              }
+              if ((params.value as number) < settings.minHeartRate) {
+                return "red"
+              }
+              return "#a8d494"
+            }
+          }
+        },
+        {
+          name: "最高心率",
+          type: chartType,
+          data: max,
+          // 若資料大於 100 為紅色 小於 100 為綠色
+          itemStyle: {
+            color: (params: any) => {
+              // return (params.value as number) > 100 ? "red" : "#f9d281"
+              // // return (params.value as number) > 100 && (params.value as number) < 60
+              if ((params.value as number) > settings.maxHeartRate) {
+                return "red"
+              }
+              if ((params.value as number) < settings.minHeartRate) {
+                return "red"
+              }
+              return "#f9d281"
+            }
+          }
+        },
+        {
+          name: "最低心率",
+          type: chartType,
+          data: min,
+          // 若資料大於 100 為紅色 小於 100 為綠色
           itemStyle: {
             color: (params: any) => {
               // return (params.value as number) > 100 ? "red" : "#768ccd"
@@ -147,41 +185,9 @@ const Content = ({ user }: { user: User }) => {
           }
         },
         {
-          name: "最高心率",
+          name: "異常心率",
           type: chartType,
-          data: max,
-          // 若資料大於 100 為紅色 小於 100 為綠色
-          itemStyle: {
-            color: (params: any) => {
-              // return (params.value as number) > 100 ? "red" : "#a8d494"
-              // // return (params.value as number) > 100 && (params.value as number) < 60
-              if ((params.value as number) > settings.maxHeartRate) {
-                return "red"
-              }
-              if ((params.value as number) < settings.minHeartRate) {
-                return "red"
-              }
-              return "#a8d494"
-            }
-          }
-        },
-        {
-          name: "最低心率",
-          type: chartType,
-          data: min,
-          // 若資料大於 100 為紅色 小於 100 為綠色
-          itemStyle: {
-            color: (params: any) => {
-              // return (params.value as number) > 100 ? "red" : "#f9d281"
-              if ((params.value as number) > settings.maxHeartRate) {
-                return "red"
-              }
-              if ((params.value as number) < settings.minHeartRate) {
-                return "red"
-              }
-              return "#f9d281"
-            }
-          }
+          data: []
         }
       ]
     }

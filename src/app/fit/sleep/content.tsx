@@ -141,7 +141,7 @@ const Content = ({ user }: { user: User }) => {
           data: daySleepList.map((item) => item.time.toFixed(2)),
           itemStyle: {
             color: (params) => {
-              return (params.value as number) <= 8 && (params.value as number) >= 6
+              return (params.value as number) <= 9 && (params.value as number) >= 7
                 ? "green"
                 : "red"
             }
