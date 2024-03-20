@@ -127,7 +127,7 @@ const Content = ({ user }: { user: User }) => {
         data: time ?? []
       },
       yAxis: {},
-      color: ["#a8d494", "#768ccd", "#f9d281", "red"],
+      color: ["#a8d494", "#f9d281", "#768ccd", "red"],
       series: [
         {
           name: "平均心率",
